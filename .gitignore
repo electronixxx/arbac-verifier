@@ -1,0 +1,8 @@
+# Ignore everything, except ...
+docs/*
+!docs/report.tex
+!docs/report.pdf
+!docs/challenge-description.pdf
+
+src/__pycache__
+src/models/__pycache__
