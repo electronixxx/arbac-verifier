@@ -52,7 +52,6 @@ class ArbacVerifier:
         self.CR -= {cr for cr in self.CR if cr.rT in rs} # remove from CR all the rules that revoke a role in R\S*
         self.roles -= rs # delete the roles in R\S*
 
-
     def update(self, current_ua, updated_ua): # expand/reduce the to visit states if the updated user-role set is changed
         if current_ua != updated_ua: self.to_visit_states.append(updated_ua)
 

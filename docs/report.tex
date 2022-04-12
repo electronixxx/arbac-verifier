@@ -11,7 +11,7 @@
 
 \part*{Introduction}
 This simple script can be used to verify the reachability of simple {\it ARBAC} rules.
-It is composed of a parser which parses an {\it .arbac} file written into a specific form (as explained
+It is composed of a parser which parses an {\it .arbac} file written into a specific format (as explained
 in the description pdf), and saves all it's elements into adeguate data structures.
 Once the parsing is done, the analyzer starts analyzing the reachability of the target role.
 
@@ -32,7 +32,7 @@ obtain the flag as the concatenation of the reachabilities expressed as zero or 
 \State $AV \gets \emptyset$ \Comment{Already-Visited States}
 \State {\it Apply forward slicing}
 \State {\it Apply backward slicing}
-\While{$ |AV| > 0 \ and \ !found $}
+\While{$ |TV| > 0 \ and \ !found $}
     \State $ cs \gets TV.pop()$
     \If{$hash(cs) \in AV$} \Comment{State already visited}
         \State $continue$
@@ -40,7 +40,7 @@ obtain the flag as the concatenation of the reachabilities expressed as zero or 
     \If{$goal \in UR(cs)$} \Comment{Goal role is reachable}
         \State $found \gets True$
     \EndIf
-    \State $AV \gets AV \cup cs$
+    \State $AV \gets AV \cup \{cs\}$
     \For{ $ca \in CA $ }
         \For{ $user \in UR(cs) $ }
             \For{ $target \in users $ }
@@ -60,14 +60,14 @@ obtain the flag as the concatenation of the reachabilities expressed as zero or 
 \end{algorithm}
 
 The pseudocode demonstrates the algorithm which performs the role reachability check.
-The idea is pretty straight forward. We start with an initial to-visit states which consists of the current user-role
+The idea is pretty straight forward, we start with an initial to-visit states which consists of the current user-role
 assignments (the one parsed from the policy file). The initial already-visited states is empty. \\
 
 Once we apply forward and backward slicing (in order to try to reduce the states), we loop through all the to-visit states,
 unless we find that the goal role is reachable. Then we try in a bruteforce approach to assign and revoke the rules, to all the
 users for each current user-role assignment.
 For each potential target, we try to assign the roles which are mentioned on the Can-Assign parsed data structure.
-The user which assigns this role to the target, is the one mantioned on the first part of the rule.
+The user which assigns this role to the target, is the one mentioned on the first part of the rule.
 The same approach is applied for the revocation part.
 
 
@@ -87,9 +87,9 @@ $$
 \frac{\left(u_{a}, r_{a}\right) \in U R \quad\left(r_{a}, r_{t}\right) \in C R \quad r_{t} \in U R\left(u_{t}\right)}{U R \rightarrow_{\mathcal{P}} U R \backslash\left\{\left(u_{t}, r_{t}\right)\right\}}
 $$
 
-Python is pretty good at expressing mathetmatical notations, so this is the reason I chose to develop it in Python.
+Python is pretty good at expressing mathematical notations, so this is the reason I chose to develop it in Python.
 
-For the forward and backward slicing, I again followed the algorithm explained on the lecture
+For the forward and backward slicing, I again followed the algorithms explained during the lecture.
 
 Forward slicing:
 
@@ -115,10 +115,10 @@ An important aspect is the complexity of this algorithm. It is actually PSPACE-c
 to implement/apply some auxilliary algorithms, in order to make everything efficient.
 One of these which is implemented in this solution is the slicing algorithm (both backward and forward slicing).
 
-During the output of the program, we can see how many possible states it reduced.
-Furthermore, that number is not the real states which the algorithm should explore, rather it is just an upperbound.
+During the output of the program, we can see how many possible states it reduces.
+Furthermore, that number is not the real states which the algorithm should explore, rather it is just an upperbound limit.
 Internally as explained above, the algorithm takes note of the already visited states, in order to not revisit them,
-which may also cause a potential infitie loop.
+which may also cause a potential infinite loop.
 For this reason, we don't know the exact complexity, but we can define an upper bound of the states as $O(2^{|R|\dot |U|})$.
 
 The practical benefit of the slicing can be seen during the output, {\it} i.e, it reduced the states of a policy from
